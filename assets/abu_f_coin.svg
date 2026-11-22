@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="ABU F">
+  <defs>
+    <radialGradient id="ff" cx="38%" cy="30%" r="80%"><stop offset="0" stop-color="#fff6c4"/><stop offset=".35" stop-color="#f6cf5a"/><stop offset=".75" stop-color="#c8921c"/><stop offset="1" stop-color="#8a5f0c"/></radialGradient>
+    <linearGradient id="fe" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a8"/><stop offset=".45" stop-color="#b8820f"/><stop offset="1" stop-color="#ffe27a"/></linearGradient>
+    <radialGradient id="fg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffd54a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd54a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="fs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  </defs>
+  <style>
+    .a-glow{animation:pulse 3.2s ease-in-out infinite;transform-origin:100px 100px}
+    .a-coin{animation:spin 6s ease-in-out infinite;transform-origin:100px 100px}
+    .a-sp{animation:tw 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+    .a-sp:nth-of-type(2){animation-delay:.6s}.a-sp:nth-of-type(3){animation-delay:1.2s}.a-sp:nth-of-type(4){animation-delay:1.8s}
+    @keyframes spin{0%,100%{transform:scaleX(1)}25%{transform:scaleX(.55)}50%{transform:scaleX(1)}75%{transform:scaleX(.55)}}
+    @keyframes pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+    @keyframes tw{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1)}}
+    @media (prefers-reduced-motion:reduce){.glow,.coin,.a-sp{animation:none}.sp{opacity:.8}}
+  </style>
+  <circle class="a-glow" cx="100" cy="100" r="98" fill="url(#fg)"/>
+  <g class="a-coin">
+    <circle cx="100" cy="100" r="86" fill="url(#fe)"/>
+    <circle cx="100" cy="100" r="83" fill="none" stroke="#5c3f06" stroke-width="7" stroke-dasharray="1.6 2.6" opacity=".75"/>
+    <circle cx="100" cy="100" r="76" fill="url(#ff)" stroke="#7a5408" stroke-width="1.5"/>
+    <circle cx="100" cy="100" r="66" fill="none" stroke="#fff3b0" stroke-opacity=".7" stroke-width="1.5"/>
+    <circle cx="100" cy="100" r="62" fill="none" stroke="#8a5f0c" stroke-opacity=".8" stroke-width="1"/>
+    <text x="100" y="118" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="800" font-size="38" fill="#fff3b0" transform="translate(1.4 1.4)">ABU F</text>
+    <text x="100" y="118" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="800" font-size="38" fill="#6b4606" transform="translate(-0.6 -0.6)">ABU F</text>
+    <text x="100" y="118" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="800" font-size="38" fill="#a8740f">ABU F</text>
+    <path d="M100 52l3 7h8l-6 5 2 8-7-4-7 4 2-8-6-5h8z" fill="#fff3b0" opacity=".9" transform="translate(0 -4) scale(1)"/>
+    <ellipse cx="78" cy="62" rx="40" ry="20" fill="url(#fs)" transform="rotate(-28 78 62)"/>
+  </g>
+  <path class="a-sp" d="M30 40l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#fff6c4"/>
+  <path class="a-sp" d="M170 56l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="#ffe27a"/>
+  <path class="a-sp" d="M160 160l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#fff6c4"/>
+  <path class="a-sp" d="M38 150l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffe27a"/>
+</svg>

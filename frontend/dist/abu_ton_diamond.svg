@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 220" role="img" aria-label="ABU TON">
+  <defs>
+    <linearGradient id="d1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8fd3ff"/><stop offset="1" stop-color="#3a63e0"/></linearGradient>
+    <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9a4ff"/><stop offset="1" stop-color="#5b3fd6"/></linearGradient>
+    <linearGradient id="d3" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6aa6ff"/><stop offset="1" stop-color="#2a2fa8"/></linearGradient>
+    <linearGradient id="d4" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7b5cf0"/><stop offset="1" stop-color="#2a8cff"/></linearGradient>
+    <linearGradient id="d5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#86c5ff"/><stop offset="1" stop-color="#4a6fe8"/></linearGradient>
+    <linearGradient id="sw" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <radialGradient id="dg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#6d7bff" stop-opacity=".5"/><stop offset="1" stop-color="#6d7bff" stop-opacity="0"/></radialGradient>
+    <clipPath id="gem"><polygon points="20,90 70,40 170,40 220,90 120,205"/></clipPath>
+  </defs>
+  <style>
+    .a-fl{animation:fl 4.5s ease-in-out infinite;transform-origin:120px 110px}
+    .a-gl{animation:gl 3.4s ease-in-out infinite;transform-origin:120px 110px}
+    .a-sw{animation:sw 3.6s ease-in-out infinite}
+    @keyframes fl{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+    @keyframes gl{0%,100%{opacity:.5}50%{opacity:1}}
+    @keyframes sw{0%{transform:translateX(-140px)}60%,100%{transform:translateX(160px)}}
+    @media (prefers-reduced-motion:reduce){.fl,.gl,.a-sw{animation:none}}
+  </style>
+  <ellipse class="a-gl" cx="120" cy="112" rx="112" ry="100" fill="url(#dg)"/>
+  <g class="a-fl">
+    <polygon points="20,90 70,40 85,90" fill="url(#d1)"/>
+    <polygon points="70,40 170,40 155,90 85,90" fill="url(#d5)"/>
+    <polygon points="170,40 220,90 155,90" fill="url(#d3)"/>
+    <polygon points="20,90 85,90 120,205" fill="url(#d2)"/>
+    <polygon points="85,90 120,90 120,205" fill="url(#d4)"/>
+    <polygon points="120,90 155,90 120,205" fill="url(#d1)"/>
+    <polygon points="155,90 220,90 120,205" fill="url(#d3)"/>
+    <g fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" stroke-linejoin="round">
+      <polygon points="20,90 70,40 170,40 220,90 120,205"/><polyline points="20,90 220,90"/><polyline points="85,90 70,40"/><polyline points="155,90 170,40"/>
+      <polyline points="85,90 120,205"/><polyline points="155,90 120,205"/><polyline points="120,90 120,205"/>
+    </g>
+    <text x="120" y="72" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" letter-spacing=".5" fill="#1b2a7a" transform="translate(0.8 0.8)" opacity=".55">ABU TON</text>
+    <text x="120" y="72" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" letter-spacing=".5" fill="#ffffff">ABU TON</text>
+    <g clip-path="url(#gem)"><rect class="a-sw" x="-20" y="30" width="46" height="190" fill="url(#sw)" transform="skewX(-20)"/></g>
+  </g>
+</svg>
