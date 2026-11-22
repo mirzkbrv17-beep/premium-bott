@@ -36,7 +36,7 @@ export default function App() {
       if (hashParts[0] === "admin-login" && hashParts[1]) {
         const a = await post("/api/auth/admin-link", { token: hashParts[1] });
         setToken(a.token);
-        history.replaceState(null, "", "#/admin");
+        go("admin");
         r = await loginTelegram().catch(async () => ({ me: await get("/api/me") }));
       } else {
         r = await loginTelegram();
