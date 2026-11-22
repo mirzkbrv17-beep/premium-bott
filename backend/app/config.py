@@ -33,14 +33,17 @@ class Settings(BaseSettings):
     rate_limit_per_minute: int = 240
 
     # To'lov provayderlari (bo'sh bo'lsa -> not_configured)
-    manual_card_info: str = ""  # foydalanuvchiga ko'rsatiladigan rekvizit matni (env'da)
+    manual_card_info: str = ""  # karta rekvizitlari matni (env'da)
+    manual_card_number: str = ""  # masalan 8600 1234 5678 9012
+    manual_card_holder: str = ""  # karta egasi ismi
+    manual_payment_contact: str = "@mirzkbrv17"  # to'lov tasdig'i uchun aloqa
     click_service_id: str = ""
     click_merchant_id: str = ""
     click_merchant_user_id: str = ""
     click_secret_key: str = ""
     mock_provider_enabled: bool = False  # faqat dev/test
     mock_webhook_secret: str = "mock-secret"
-    stars_enabled: bool = True  # Telegram Stars (XTR) - bot token bo'lsa ishlaydi
+    stars_enabled: bool = False  # Telegram Stars o'chirilgan (karta orqali to'lov ishlatiladi)
 
     run_scheduler: bool = True
     redis_url: str = ""  # ixtiyoriy; hozircha ishlatilmaydi

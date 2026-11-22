@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { get, t, useAsync, post, go, fmt, CUR } from "../lib";
+import { get, t, useAsync, post, go, fmt, CUR, toast } from "../lib";
 import type { Cat, Product } from "../api";
 import { Empty, ErrorBox, Media, Skeletons, Sheet, flyCoins } from "../ui";
 import { useSubmit, PayChooser } from "./Shared";
@@ -65,7 +65,7 @@ function BuySheet({ p, onClose }: { p: Product; onClose: () => void }) {
     const isF = p.action === "topup_f";
     const body = isF ? { currency: "ABU_F", provider: "manual_card", units: topupUnits } : { currency: "ABU_TON", provider: "manual_card", package_id: topupUnits };
     const r = await submit((key) => post("/api/topup", { ...body, idempotency_key: key }));
-    if (r) { onClose(); go("balance/topups"); }
+    if (r) { onClose(); if (r.pay?.type === "manual") toast(`To‘lovdan so‘ng chekni shu botga skrinshot qilib yuboring.`, "ok"); go("balance/topups"); }
   };
 
   const sumF = qty * p.final_price_uzs / (pkgs.data?.abu_f?.uzs_per_unit || 10);

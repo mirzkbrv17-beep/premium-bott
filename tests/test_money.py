@@ -181,6 +181,7 @@ async def test_receipt_rejects_non_image(login):
 
 
 async def test_stars_event_processing(login, monkeypatch):
+    monkeypatch.setattr("app.config.settings.stars_enabled", True)
     async def fake_invoice(t):
         return f"https://t.me/$fake/{t.public_id}"
     monkeypatch.setattr("app.bot.instance.create_stars_invoice", fake_invoice)

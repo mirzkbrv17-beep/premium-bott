@@ -34,11 +34,19 @@ class ManualCardProvider(Provider):
     code, name, kind = "manual_card", "Karta orqali (qo'lda tasdiq)", "manual"
 
     def configured(self) -> bool:
-        return bool(settings.manual_card_info.strip())
+        return True
 
     async def create_payment(self, topup, user) -> dict:
-        return {"type": "manual", "instructions": settings.manual_card_info, "amount_uzs": topup.uzs_amount,
-                "comment": topup.public_id}
+        card = settings.manual_card_number.strip() or "kiritilmagan"
+        holder = settings.manual_card_holder.strip() or "-"
+        rekvizit = settings.manual_card_info.strip() or card
+        text = (f"💳 Karta: {rekvizit}\n"
+                f"Summa: {topup.uzs_amount:,} so‘m\n"
+                f"Izoh (comment): {topup.public_id}\n\n"
+                f"To‘lovdan so‘ng chekni {settings.manual_payment_contact} ga yuboring. "
+                f"Admin tasdiqlagach balans qo‘shiladi.").replace(",", " ")
+        return {"type": "manual", "instructions": text, "card_number": card, "card_holder": holder,
+                "amount_uzs": topup.uzs_amount, "comment": topup.public_id}
 
 
 class ClickProvider(Provider):

@@ -122,6 +122,7 @@ function TopupSheet({ onClose }: { onClose: () => void }) {
   const [units, setUnits] = useState(100);
   const [pkg, setPkg] = useState<number | null>(null);
   const [provider, setProvider] = useState("");
+  const [info, setInfo] = useState<any>(null);
   const { busy, submit } = useSubmit();
   const o = opts.data;
   const provs = (o?.providers ?? []).filter((p) => p.status === "ready");
@@ -132,10 +133,27 @@ function TopupSheet({ onClose }: { onClose: () => void }) {
     if (r) {
       const pay = r.pay;
       if (pay.type === "invoice" || pay.type === "url") { (tgw() ? tgw().openLink(pay.url) : window.open(pay.url, "_blank")); }
-      if (pay.type === "manual") toast("Quyidagi kartaga to‘lab, chekni yuklang", "");
+      if (pay.type === "manual") { setInfo(pay); return; }
       onClose();
     }
   };
+  const copy = (v: string) => { navigator.clipboard?.writeText(v); toast("Nusxalandi", "ok"); };
+  if (info) return (
+    <Sheet onClose={() => { setInfo(null); onClose(); }} title="To‘lov ma‘lumoti">
+      <div className="glass">
+        <div className="muted">Karta raqami</div>
+        <div className="row" style={{ marginTop: 4 }}>
+          <b className="sp" style={{ fontSize: 18, letterSpacing: 1 }}>{info.card_number}</b>
+          <button className="btn sm gold" onClick={() => copy(info.card_number.replace(/\s/g, ""))}>📋 Nusxa</button>
+        </div>
+        <div className="muted" style={{ marginTop: 6 }}>Egasi: {info.card_holder}</div>
+        <div className="row" style={{ marginTop: 10 }}><span className="sp muted">Summa</span><b>{fmt(info.amount_uzs)} so‘m</b></div>
+        <div className="row" style={{ marginTop: 6 }}><span className="sp muted">Izoh</span><code>{info.comment}</code><button className="btn sm" onClick={() => copy(info.comment)}>📋</button></div>
+      </div>
+      <div className="muted" style={{ marginTop: 10 }}>To‘lovdan so‘ng chekning skrinshotini shu botga yuboring. Admin tasdiqlagach balans qo‘shiladi.</div>
+      <button className="btn gold block" style={{ marginTop: 12 }} onClick={() => { setInfo(null); onClose(); }}>Tushunarli</button>
+    </Sheet>
+  );
   return (
     <Sheet onClose={onClose} title="Balansni to‘ldirish">
       {opts.loading ? <Skeletons n={1} grid={false} /> : (

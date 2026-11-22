@@ -12,6 +12,8 @@ from aiogram.types import (CallbackQuery, InlineKeyboardButton, InlineKeyboardMa
 from sqlalchemy import select
 
 from ..config import settings
+from ..errors import DomainError as _DE
+from ..models import TopUp as _TopUp, AdminUser, Permission, RolePermission
 from ..db import SessionLocal
 from ..errors import DomainError
 from ..models import AdminUser, TopUp, User
@@ -165,3 +167,91 @@ async def send_text(telegram_id: int, text: str) -> bool:
     except Exception as ex:
         log.info("yuborilmadi %s: %s", telegram_id, ex)
         return False
+
+
+# ------------------------------------------------------------------ karta to'lovi: chek -> admin tasdiqlaydi
+async def _admin_with_perm(session, tg_id: int, code: str):
+    u = (await session.execute(select(User).where(User.telegram_id == tg_id))).scalar_one_or_none()
+    if u is None:
+        return None
+    adm = (await session.execute(select(AdminUser).where(AdminUser.user_id == u.id, AdminUser.active.is_(True)))).scalar_one_or_none()
+    if adm is None:
+        return None
+    if adm.role.name == "superadmin":
+        return u
+    codes = (await session.execute(select(Permission.code).join(RolePermission, RolePermission.permission_id == Permission.id)
+                                   .where(RolePermission.role_id == adm.role_id))).scalars().all()
+    return u if code in codes else None
+
+
+@router.message(F.photo, F.chat.type == "private")
+async def on_receipt(m: Message):
+    async with SessionLocal() as s:
+        user = (await s.execute(select(User).where(User.telegram_id == m.from_user.id))).scalar_one_or_none()
+        if user is None:
+            await m.answer("Avval /start bosing.")
+            return
+        t = (await s.execute(select(_TopUp).where(_TopUp.user_id == user.id, _TopUp.provider == "manual_card",
+                                                   _TopUp.status.in_(["pending", "awaiting_review"]))
+                             .order_by(_TopUp.id.desc()).limit(1).with_for_update())).scalar_one_or_none()
+        if t is None:
+            await m.answer("Faol karta to'lovi topilmadi. Avval Balans → To‘ldirish bo‘limida summani tanlang.")
+            return
+        t.details = {**(t.details or {}), "tg_file_id": m.photo[-1].file_id}
+        t.status = "awaiting_review"
+        await s.commit()
+        caption = (f"💳 Yangi chek\nFoydalanuvchi: {user.first_name} ({user.abu_id})\n"
+                   f"Miqdor: {t.units} {t.currency.replace('_', ' ')}\nSo‘m: {t.uzs_amount:,}".replace(",", " ")
+                   + f"\nID: {t.public_id}")
+        kb = InlineKeyboardMarkup(inline_keyboard=[[
+            InlineKeyboardButton(text="✅ Tasdiqlash", callback_data=f"tp:ok:{t.public_id}"),
+            InlineKeyboardButton(text="❌ Rad etish", callback_data=f"tp:no:{t.public_id}")]])
+        fid = m.photo[-1].file_id
+    sent = 0
+    for aid in settings.admin_ids:
+        try:
+            await bot.send_photo(aid, fid, caption=caption, reply_markup=kb)
+            sent += 1
+        except Exception as ex:
+            log.warning("admin %s ga chek yuborilmadi: %s", aid, ex)
+    if sent:
+        await m.answer("✅ Chek qabul qilindi. Admin tekshirgach balansingizga qo‘shiladi.")
+    else:
+        await m.answer("Chek qabul qilindi, lekin admin hozir xabar ololmadi. Iltimos, keyinroq qayta yuboring yoki @mirzkbrv17 ga murojaat qiling.")
+
+
+@router.callback_query(F.data.startswith("tp:"))
+async def cb_review(c: CallbackQuery):
+    try:
+        _, action, pid = c.data.split(":", 2)
+    except ValueError:
+        await c.answer()
+        return
+    approve = action == "ok"
+    async with SessionLocal() as s:
+        admin = await _admin_with_perm(s, c.from_user.id, "payments.review")
+        if admin is None:
+            await c.answer("Sizda ruxsat yo'q", show_alert=True)
+            return
+        t = (await s.execute(select(_TopUp).where(_TopUp.public_id == pid))).scalar_one_or_none()
+        if t is None:
+            await c.answer("To'lov topilmadi", show_alert=True)
+            return
+        try:
+            await topup_svc.admin_review(s, t.id, approve=approve, admin_id=admin.id,
+                                         note=None if approve else "Chek tasdiqlanmadi")
+            await s.commit()
+        except _DE as ex:
+            await s.rollback()
+            await c.answer(ex.message, show_alert=True)
+            return
+    result = "✅ Tasdiqlandi" if approve else "❌ Rad etildi"
+    who = f"@{c.from_user.username}" if c.from_user.username else str(c.from_user.id)
+    try:
+        await c.message.edit_caption(caption=f"{c.message.caption or ''}\n\n{result} ({who})", reply_markup=None)
+    except Exception:
+        try:
+            await c.message.edit_reply_markup(reply_markup=None)
+        except Exception:
+            pass
+    await c.answer(result)

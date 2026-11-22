@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { applyAnimSettings, get, go, loginTelegram, t, tg, useRoute, ApiError, setLang } from "./lib";
+import { applyAnimSettings, get, go, loginTelegram, t, tg, useRoute, ApiError, setLang, post, setToken } from "./lib";
 import { Icons, ToastHost } from "./ui";
 import type { Me } from "./api";
 import Shop from "./pages/Shop";
@@ -31,7 +31,16 @@ export default function App() {
   const boot = async () => {
     setState("loading");
     try {
-      const r = await loginTelegram();
+      const hashParts = (location.hash || "").replace(/^#\/?/, "").split("/");
+      let r: any;
+      if (hashParts[0] === "admin-login" && hashParts[1]) {
+        const a = await post("/api/auth/admin-link", { token: hashParts[1] });
+        setToken(a.token);
+        history.replaceState(null, "", "#/admin");
+        r = await loginTelegram().catch(async () => ({ me: await get("/api/me") }));
+      } else {
+        r = await loginTelegram();
+      }
       setMe(r.me); setLang(r.me.settings?.language || "uz");
       applyAnimSettings(r.me.settings?.animations || "auto");
       const sub = await get("/api/subscription");
