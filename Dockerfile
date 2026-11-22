@@ -13,7 +13,7 @@ COPY backend/requirements.txt backend/requirements.txt
 RUN pip install -r backend/requirements.txt
 COPY backend backend
 COPY migrations migrations
-COPY alembic.ini main.py ./
+COPY alembic.ini main.py scripts_fix_alembic.py ./
 COPY assets assets
 COPY --from=web /web/dist frontend/dist
-CMD sh -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers"
+CMD sh -c "python scripts_fix_alembic.py && alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers"
